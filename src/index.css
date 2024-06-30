@@ -1,13 +1,37 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url('https://fonts.googleapis.com/css2?family=Bakbak+One&family=Baloo+Bhai+2&family=Barlow&family=Covered+By+Your+Grace&family=Golos+Text:wght@500&family=Josefin+Sans&family=Lato:wght@400;700&family=Montserrat:wght@500&family=Mukta:wght@500&family=Nerko+One&family=Phudu&family=Poller+One&family=Poppins:wght@200&family=Roboto+Condensed&family=Roboto+Slab:wght@300&family=Rubik:wght@500&family=Ubuntu&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html {
+  font-family: 'Montserrat', sans-serif;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+input:focus {
+  
+  outline-style: none
+}
+
+select:focus{
+  outline-style: none;
+}
+@media (max-width:550px) {
+  input {
+    font-size: smaller;
+  }
+
+  label {
+    font-size: x-small;
+  }
+}
+
+Link {
+  font-size: x-small;
+}
+
+span {
+  font-size: x-small;
+}
+thead {
+  background-color: #f2f2f2;
+  border-radius: 10px 10px 0 0; /* Rounded top corners */
 }
