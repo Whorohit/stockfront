@@ -17,7 +17,7 @@ function Signup() {
         try {
             const { firstname, lastname, email, password } = userData
             const dta = await dispatch(usersignup({ firstname: firstname, lastname: lastname, email: email, password: password }))
-            console.log(dta.payload);
+            // console.log(dta.payload);
             if (dta.payload.success === true) {
                 const nowIST = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 

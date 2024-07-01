@@ -35,14 +35,14 @@ function Settings() {
   const handleImageChange = useCallback((event) => {
     let reader = new FileReader();
     let a = reader.readAsDataURL(event.target.files[0]);
-    console.log(a);
+    // console.log(a);
     reader.onload = () => {
       setImage(reader.result);
-      console.log(reader.result);
+      // console.log(reader.result);
       setuserdta(prev => ({ ...prev, userprofile: reader.result }));
     };
     reader.onerror = error => {
-      console.log(error);
+      // console.log(error);
     };
   }, []);
 

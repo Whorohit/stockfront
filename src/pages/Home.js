@@ -41,7 +41,7 @@ function Home(props) {
   const dtaofcard = useSelector((state) => state.stock.cardData)
   const dispatch = useDispatch();
   const onchange = (date, dateString) => {
-    console.log(dateString);
+    // console.log(dateString);
     setGraphdate(dateString)
   };
   const [optionmonth, setoptionmonth] = useState({ type: "month", state: false })
@@ -57,7 +57,7 @@ function Home(props) {
     const dta = await dispatch(getCarddata({ month: cardMonth, year: cardYear }))
      if(dta.payload.success=== true && dta.payload.error=='Please authenticate using a valid token')
      {
-      console.log('heee');
+      // console.log('heee');
       navigate('/login')
      }
     let profitcount;
@@ -92,11 +92,11 @@ function Home(props) {
     const dta = await dispatch(usergraphdata({ month:month, year:year }))
     if(dta.payload.success===false && dta.payload.error=='Please authenticate using a valid token')
     {
-     console.log('heee');
+    //  console.log('heee');
      navigate('/login')
     }
      const results=dta.payload.result?dta.payload.result:[]
-     console.log(dta.payload.results);
+    //  console.log(dta.payload.results);
      if(results.length>1)
      {
       profit=results.map((data)=>{
@@ -111,7 +111,7 @@ function Home(props) {
         return(data.time)
 
      })
-     console.log(profit,loss,label);
+    //  console.log(profit,loss,label);
      setprofit(profit)
      setloss(loss)
      setlabel(label)
@@ -186,7 +186,7 @@ function Home(props) {
                 value={cardMonth}
                 onChange={(e) => {
                   setCardMonth(e.target.value)
-                  console.log(e.target.value);
+                  // console.log(e.target.value);
                 }} >
 
                 {
@@ -216,7 +216,7 @@ function Home(props) {
                 value={cardYear}
                 onChange={(e) => {
                   setCardYear(e.target.value)
-                  console.log(e.target.value);
+                  // console.log(e.target.value);
                 }}>
                 <option value={""}>
                   Year

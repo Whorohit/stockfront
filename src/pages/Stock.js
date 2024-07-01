@@ -52,7 +52,7 @@ function Stock(props) {
   
 
 
-  console.log(filterdata, "Tttttttttttttt")
+  // console.log(filterdata, "Tttttttttttttt")
   const serachvalue = (value) => {
     setSerach(value)
   }

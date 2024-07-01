@@ -118,7 +118,7 @@ export const getCarddata = createAsyncThunk(
     });
     const jsonfile = await response.json()
 
-    console.log(jsonfile)
+  //  console.log(jsonfile)
     return jsonfile
 
   }
@@ -145,7 +145,7 @@ export const getStock = createAsyncThunk(
     const key = localStorage.getItem("stock")
     let response = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=${key}`);
     const jsonfile = await response.json()
-    console.log(jsonfile)
+  //  console.log(jsonfile)
 
 
   }
@@ -191,7 +191,7 @@ export const pagedata = createAsyncThunk(
         body: JSON.stringify({ watchlistname: name }),
       });
       const jsonfile = await response.json();
-      console.log(jsonfile)
+      // console.log(jsonfile)
       return jsonfile;
     } catch (error) {
       console.error('Error in getwatchlistpagedata action:', error);
@@ -214,7 +214,7 @@ export const getwatchlist = createAsyncThunk(
 
       });
       const jsonfile = await response.json()
-      console.log(jsonfile);
+      // console.log(jsonfile);
       return jsonfile;
     } catch (error) {
       console.log(error)
@@ -246,7 +246,7 @@ export const updatemodal = createAsyncThunk(
       ...data
     };
 
-    console.log(updatedModal, "bbb");
+    // console.log(updatedModal, "bbb");
 
     if (updatedModal.yes === true && updatedModal.fun) {
       updatedModal.fun();
@@ -277,7 +277,7 @@ export const removefromwatchlist = createAsyncThunk(
           (item) => item.watchlistname !== name
         );
         updatedWatchlist = { ...currentState.stock.watchlistarray, array: updatedWatchlist, };
-        console.log(updatedWatchlist);
+        // console.log(updatedWatchlist);
         return updatedWatchlist;
 
       } else {
@@ -307,9 +307,9 @@ export const createwatchlist = createAsyncThunk(
 
       if (jsonfile.success === true) {
         const currentState = thunkAPI.getState();
-        console.log(currentState.stock.watchlistarray)
+        // console.log(currentState.stock.watchlistarray)
         let updatedWatchlist = { array: [...currentState.stock.watchlistarray.array, { _id, watchlistname }] };
-        console.log(updatedWatchlist, "Fffff")
+        // console.log(updatedWatchlist, "Fffff")
         return updatedWatchlist;
 
       }
@@ -336,7 +336,7 @@ export const addtowatchlist = createAsyncThunk(
         throw new Error(`Request failed with status: ${response.status}`);
       }
       const jsonfile = await response.json();
-      console.log(jsonfile)
+ 
       // response.then(async (res) => {
 
       return jsonfile
@@ -363,7 +363,7 @@ export const removelistofwatchlist = createAsyncThunk(
         throw new Error(`Request failed with status: ${response.status}`);
       }
       const jsonfile = await response.json();
-      console.log(jsonfile)
+    
       // response.then(async (res) => {
       if (jsonfile.sucess === true) {
         const currentState = thunkAPI.getState();
@@ -426,7 +426,7 @@ export const login = createAsyncThunk(
         body: JSON.stringify({ email: email, password: password }),
       });
       const jsonfile = await response.json()
-      console.log(jsonfile, "tt")
+     
       return jsonfile
     } catch (error) {
 
@@ -448,7 +448,7 @@ export const getuserinfo = createAsyncThunk(
         },
       });
       const jsonfile = await response.json()
-      console.log(jsonfile, "userinfo")
+      
       return jsonfile
     } catch (error) {
 
@@ -483,7 +483,7 @@ export const usergraphdata = createAsyncThunk(
     });
     const jsonfile = await response.json()
 
-    console.log(jsonfile)
+  //  console.log(jsonfile)
     return jsonfile
 
   }
@@ -710,7 +710,7 @@ export const setTabKey = createAsyncThunk(
         updatedTab[key] = item === key;
       }
 
-      console.log(updatedTab);
+      // console.log(updatedTab);
       return updatedTab;
     } catch (error) {
       console.error(error);
@@ -721,7 +721,7 @@ export const setTabKey = createAsyncThunk(
 export const serachdatabystockname = createAsyncThunk(
   "serachdatabystockname",
   async ({ stockname, startDate, endDate }) => {
-    console.log(startDate, endDate);
+    // console.log(startDate, endDate);
     try {
       let response = await fetch(`${apiUrl}api/specificdata/${stockname}?startDate=${startDate}&endDate=${endDate}`, {
         method: "GET",
