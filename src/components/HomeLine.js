@@ -40,6 +40,7 @@ function HomeLine({mydata,profit,loss,label}) {
 
   useEffect(() => {
    
+   try {
     dataarray = mydata && mydata.map((data) => {
       return data.margin
     })
@@ -49,6 +50,10 @@ function HomeLine({mydata,profit,loss,label}) {
 
     })
     setTime(datearray)
+    
+   } catch (error) {
+    console.log(error);
+   }
   }, [mydata])
   
 

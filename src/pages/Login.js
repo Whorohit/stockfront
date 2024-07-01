@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'
 import s from '../s.png'
 import { Link, useNavigate } from 'react-router-dom'
@@ -7,14 +7,17 @@ import { login } from '../stores'
 import { useDispatch, useSelector } from 'react-redux'
 import Toastbox from '../components/toastbox'
 import { ToastContainer } from 'react-toastify'
+import { getnewskeys, getstockkeys } from '../stores/apikeyslice'
+import Modal from '../components/modal'
 function Login() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const [userData, setUserData] = useState({ email: " ", password: " " })
+  const [userData, setUserData] = useState({ email: "ram150@gmail.com", password: "rohit@1345" })
   const data = useSelector((state) => state.stock.logininfo);
   const handleonchange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value })
   }
+  
   const handlesubmit = (e) => {
     e.preventDefault()
     try {
@@ -28,6 +31,15 @@ function Login() {
             localStorage.setItem('id', action.payload.token)
             localStorage.setItem('time', expirationTimeIST);
             localStorage.setItem('firstname', action.payload.userinfo.firstname)
+            localStorage.setItem("news", action.payload.userinfo?.news)
+            if (action.payload.userinfo.newsapi) {
+              localStorage.setItem("news", action.payload.userinfo.newsapi? action.payload.userinfo.newsapi:"")
+              dispatch(getnewskeys())
+            }
+            if (action.payload.userinfo.stockapi) {
+              localStorage.setItem("stock", action.payload.userinfo.stockapi?action.payload.userinfo.stockapi:"")
+              dispatch(getstockkeys())
+            }
             localStorage.setItem('email', action.payload.userinfo.email)
             localStorage.setItem('userprofile', action.payload.userinfo.userprofile ? action.payload.userinfo.userprofile : "")
             setTimeout(() => {
@@ -42,10 +54,17 @@ function Login() {
       console.log(error)
     }
   }
+  //  useEffect(() => {
+  //   alert("user   account  email:ram150@gmail.com and password :rohit@1345  as it have per defined data sets ")
+   
+     
+  //  }, [])
+   
 
   return (
     <>
       <Toastbox />
+
       <div className=' min-h-screen min-w-screen mx-auto  flex justify-center items-center   bg-gray-200 '>
         <div className=" w-[90%]  md:flex justify-center md:w-3/5  " >
           <div class="hidden md:flex justify-evenly  flex-col  font-semibold w-3/5  md:rounded-s-3xl  bg-indigo-500 text-white " style={{ minHeight: "40rem" }}>
@@ -71,12 +90,12 @@ function Login() {
               <p class="mb-4 md:text-xs ">Please login to your account</p>
               <div className="container flex flex-col">
                 <label htmlFor="email " className='text-black text-xs my-1 font-semibold' >  Email or Phone no</label>
-                <input type="text" className='w-4/5   text-sm border-2 border-gray-200 rounded-lg py-2 focus:border-indigo-500 ' name="email" id="email" style={{ minHeight: "1.8rem" }} onChange={handleonchange} />
+                <input type="text" className='w-4/5   text-sm border-2 border-gray-200 rounded-lg py-2 focus:border-indigo-500 ' defaultValue={"ram150@gmail.com"} name="email" id="email" style={{ minHeight: "1.8rem" }} onChange={handleonchange} />
               </div>
               <h1 className='h-4 my-3'></h1>
               <div className="container flex flex-col">
                 <label htmlFor="password " className='text-black text-xs my-1 font-semibold' >Password</label>
-                <input type="password" className='w-4/5  text-sm border-2 border-gray-200 rounded-lg py-2 focus:border-indigo-500 ' name="password" id="password" style={{ minHeight: "1.8rem" }} onChange={handleonchange} />
+                <input type="password" className='w-4/5  text-sm border-2 border-gray-200 rounded-lg py-2 focus:border-indigo-500 ' defaultValue={"rohit@1345"} name="password" id="password" style={{ minHeight: "1.8rem" }} onChange={handleonchange} />
 
               </div>
               <div class="mb-6  text-base  md:text-xs mt-2 flex items-center justify-start  flex-wrap ">

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { BsThreeDotsVertical, BsVolumeUpFill } from 'react-icons/bs'
 import { AiOutlineArrowDown, AiOutlineArrowUp } from 'react-icons/ai'
 import { faArrowTrendUp, faArrowTrendDown, faVolumeHigh, faWallet } from '@fortawesome/free-solid-svg-icons'
-import { getCarddata, getUserdata, getuserinfo, setTabKey, usergraphdata } from '../stores'
+import { getCarddata, getUserdata, getuserinfo, setTabKey, updatemodal, usergraphdata } from '../stores'
 import HomeLine from '../components/HomeLine'
 import News from '../components/News'
 import Createwatchlist from '../components/Createwatchlist'
@@ -147,7 +147,25 @@ function Home(props) {
   const closeOptions = () => {
     setoptionmonth({ ...optionmonth, state: false });
     setoptionyear({ ...optionmyear, state: false });
+
   };
+
+  useEffect(() => {
+     const news =localStorage.getItem("news")
+     const stock =localStorage.getItem("stock")
+     if (!news || !stock || stock.length===0 || news.length===0 ) {
+      dispatch(updatemodal({
+        state: true,
+        title: ` for using the stock and  news  component  you have to  save  newsapi and  stockapi in db  from  stockapi -https://financialmodelingprep.com/ newsapi api-  https://www.alphavantage.co`,
+        but2: "Cancel",
+        but1: "Sure",
+        fun: () => {  navigate("/account")}
+    }))
+     }
+     
+   
+  }, [])
+  
 
   return (
     <>

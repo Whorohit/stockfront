@@ -7,13 +7,14 @@ import {
 import axios from 'axios'
 import { useState } from 'react'
 import thunkMiddleware from 'redux-thunk';
+import { apikeySlice, ApikeySlice, getstockkeys } from './apikeyslice';
 const initialState = {
 
   userdata: ["rp", 'bvip', "ghj"],
   genres: [],
 };
 const d = [];
- const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export const getUserdata = createAsyncThunk(
   "stock/userdata",
@@ -23,8 +24,7 @@ export const getUserdata = createAsyncThunk(
       let response = await fetch(`${apiUrl}api/data?month=${month}&year=${year}`, {
         method: "GET", // *GET, POST, PUT, DELETE, etc.
         headers: {
-          "Content-Type": " application/json",
-          // "id": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjRkMjk3M2Q3MTBmZDc0YjU0MjA5MjVkIn0sImlhdCI6MTY5MTUyMjg3N30.5pBx7pQT_kFT8pPKtXzin8v_hB7ysbxMf0cvxoG1Eu0",
+          "Content-Type": "application/json",
           "id": localStorage.getItem('id')
 
         },
@@ -52,7 +52,7 @@ export const deleteuserdata = createAsyncThunk(
       },
     });
     const jsonfile = await response.json()
-   return jsonfile
+    return jsonfile
 
   }
 );
@@ -127,11 +127,12 @@ export const getCarddata = createAsyncThunk(
 
 export const getNews = createAsyncThunk(
   "stock/news",
-  async (topic = "all") => {
+  async ({ topic = "all", key = "" }) => {
+    console.log(key, "ffff");
     try {
-      let response = await fetch(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topic=${topic}&tickers=AAPL&apikey=26SAGUZP2KZCV6HO`);
+      let response = await fetch(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&topic=${topic}&tickers=AAPL&apikey=${key}`);
       const jsonfile = await response.json()
-      return jsonfile.feed
+      return jsonfile
     } catch (error) {
       console.log(error)
     }
@@ -141,7 +142,8 @@ export const getNews = createAsyncThunk(
 export const getStock = createAsyncThunk(
   "stock/stockmydata",
   async () => {
-    let response = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=9bedec4766c50b3137e7822e6f5a9b2c`);
+    const key = localStorage.getItem("stock")
+    let response = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/1min/AAPL?apikey=${key}`);
     const jsonfile = await response.json()
     console.log(jsonfile)
 
@@ -151,26 +153,27 @@ export const getStock = createAsyncThunk(
 export const getSymbol = createAsyncThunk(
   "stock/symbol",
   async () => {
-    let response = await fetch(`https://financialmodelingprep.com/api/v3/stock/list?apikey=9bedec4766c50b3137e7822e6f5a9b2c`);
+    const key = localStorage.getItem("stock")
+    let response = await fetch(`https://financialmodelingprep.com/api/v3/stock/list?apikey=${key}`);
     const jsonfile = await response.json()
-    let array = []
-    array = await jsonfile.map((data) => {
+    // let array = []
+    // array = await jsonfile.map((data) => {
 
-      return (
-        {
-          value: data.symbol,
-          label: data.name,
-          // value: data.symbol,
-          // label: data.name,
-          // companysymbol:data.symbol,
-          exchange: data.exchange,
-          exchangeShortName: data.exchangeShortName,
-          price: data.price,
-          type: data.type
-        })
+    //   return (
+    //     {
+    //       value: data.symbol,
+    //       label: data.name,
+    //       // value: data.symbol,
+    //       // label: data.name,
+    //       // companysymbol:data.symbol,
+    //       exchange: data.exchange,
+    //       exchangeShortName: data.exchangeShortName,
+    //       price: data.price,
+    //       type: data.type
+    //     })
 
-    })
-    return await array
+    // })
+    return await jsonfile
 
 
   }
@@ -329,17 +332,17 @@ export const addtowatchlist = createAsyncThunk(
         },
         body: JSON.stringify({ _id: _id, watchlistname: watchlistname, stock: dta }),
       });
-      if (response.success===false) {
+      if (response.success === false) {
         throw new Error(`Request failed with status: ${response.status}`);
       }
       const jsonfile = await response.json();
       console.log(jsonfile)
       // response.then(async (res) => {
-      
+
       return jsonfile
     } catch (error) {
       console.log(error);
-      throw error; // Re-throw the error so it can be handled in your component.
+      // Re-throw the error so it can be handled in your component.
     }
 
   }
@@ -356,7 +359,7 @@ export const removelistofwatchlist = createAsyncThunk(
         },
         body: JSON.stringify({ watchlistname: watchlistname, value: value }),
       });
-      if (response.success===false) {
+      if (response.success === false) {
         throw new Error(`Request failed with status: ${response.status}`);
       }
       const jsonfile = await response.json();
@@ -365,12 +368,12 @@ export const removelistofwatchlist = createAsyncThunk(
       if (jsonfile.sucess === true) {
         const currentState = thunkAPI.getState();
         thunkAPI.dispatch(pagedata({ name: watchlistname }))
- 
+
       }
       return jsonfile
     } catch (error) {
       console.log(error);
-      throw error; // Re-throw the error so it can be handled in your component.
+      // Re-throw the error so it can be handled in your component.
     }
 
   }
@@ -380,7 +383,8 @@ export const getStockInfo = createAsyncThunk(
   "stock/stockinfo",
   async (id) => {
     try {
-      let response = await fetch(`https://financialmodelingprep.com/api/v3/profile/${id}?apikey=9bedec4766c50b3137e7822e6f5a9b2c`);
+      const key = localStorage.getItem("stock")
+      let response = await fetch(`https://financialmodelingprep.com/api/v3/profile/${id}?apikey=${key}`);
       const jsonfile = await response.json()
       return jsonfile[0]
 
@@ -394,14 +398,14 @@ export const getStockgraph = createAsyncThunk(
   "stock/stockgraph",
   async ({ symbol, date, time }) => {
     try {
-
-      let response = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${date}&to=${date}&apikey=9bedec4766c50b3137e7822e6f5a9b2c`);
+      const key = localStorage.getItem("stock") || ""
+      let response = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/${time}/${symbol}?from=${date}&to=${date}&apikey=${key}`);
       const jsonfile = await response.json()
-      let array = jsonfile.map((data) => {
-        return ({ time: data.date.slice(10), margin: data.open })
-      })
-      console.log(array, "tt")
-      return array
+      // let array =  jsonfile.map((data) => {
+      //   return ({ time: data.date.slice(10), margin: data.open })
+      // })
+      // console.log(array, "tt")
+      return jsonfile
     } catch (error) {
       console.log(error)
     }
@@ -496,7 +500,7 @@ export const usersignup = createAsyncThunk(
 
 
         },
-        body: JSON.stringify({ email: email, password:password, firstname: firstname, lastname: lastname }),
+        body: JSON.stringify({ email: email, password: password, firstname: firstname, lastname: lastname }),
       });
       const jsonfile = await response.json()
       console.log(jsonfile, "userinfo")
@@ -512,14 +516,17 @@ export const updateuserpersonalinfo = createAsyncThunk(
   "stock/updateuserinfo",
   async ({ userinfo }) => {
     try {
-
+      console.log(userinfo);
+      const formData = new FormData();
+      for (const key in userinfo) {
+        formData.append(key, userinfo[key]);
+      }
       let response = await fetch(`${apiUrl}auth/updateuserinfo`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           "id": localStorage.getItem('id')
         },
-        body: JSON.stringify(userinfo),
+        body: formData
       });
       const jsonfile = await response.json()
       console.log(jsonfile, "userinfo")
@@ -783,27 +790,25 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(login.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=['Login Successfully']
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = ['Login Successfully']
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
     });
     builder.addCase(login.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Login Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Login Failed']
+
 
 
     });
@@ -811,57 +816,53 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(usersignup.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=['Account created Successfully']
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = ['Account created Successfully']
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
     });
     builder.addCase(usersignup.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Creation Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Creation Failed']
+
 
 
     });
-    
-   
+
+
     builder.addCase(getuserinfo.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(getuserinfo.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if( action.payload?.success===true)
-       {
-        state.status="success"
-        state.text=['userinfo  fetch Successfully']
-       } 
-       if(action.payload?.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload?.success === true) {
+        state.status = "success"
+        state.text = ['userinfo  fetch Successfully']
+      }
+      if (action.payload?.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
     });
     builder.addCase(getuserinfo.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=[' Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = [' Failed']
+
 
 
     });
@@ -869,27 +870,25 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(updateuserpersonalinfo.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`${action.payload.message}`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`${action.payload.message}`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
     });
     builder.addCase(updateuserpersonalinfo.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=[' Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = [' Failed']
+
 
 
     });
@@ -897,27 +896,25 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(adduserdata.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`${action.payload.message}`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=action.payload.errors?action.payload.errors.map((dta)=>dta):[] 
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`${action.payload.message}`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = action.payload.errors ? action.payload.errors.map((dta) => dta) : []
+      }
 
 
     });
     builder.addCase(adduserdata.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+
 
 
     });
@@ -925,27 +922,25 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(updateuserdata.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`${action.payload.message}`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=action.payload.errors?action.payload.errors.map((dta)=>dta):[] 
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`${action.payload.message}`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = action.payload.errors ? action.payload.errors.map((dta) => dta) : []
+      }
 
 
     });
     builder.addCase(updateuserdata.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+
 
 
     });
@@ -953,27 +948,25 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(deleteuserdata.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`${action.payload.message}`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`${action.payload.message}`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
     });
     builder.addCase(deleteuserdata.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Failed']
-     
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+
 
 
     });
@@ -981,65 +974,61 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(createwatchlist.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      
-        state.status="success"
-        state.text=[`Watchlist created Successfully`]
-      
+      state.responseToast = true
+      state.loading = false
+
+      state.status = "success"
+      state.text = [`Watchlist created Successfully`]
+
 
 
     });
     builder.addCase(createwatchlist.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Failed']
-    
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+
     });
     builder.addCase(addtowatchlist.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(addtowatchlist.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`${action.payload.message}`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`${action.payload.message}`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
 
     });
     builder.addCase(addtowatchlist.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Failed']
-    
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+
     });
     builder.addCase(removelistofwatchlist.pending, (state, action) => {
       state.loading = true;
     });
     builder.addCase(removelistofwatchlist.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`Remove Successfully`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`Remove Successfully`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
 
@@ -1048,28 +1037,87 @@ export const responseToastSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(removefromwatchlist.fulfilled, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-       if(action.payload.success===true)
-       {
-        state.status="success"
-        state.text=[`Remove Successfully`]
-       } 
-       if(action.payload.success===false)
-       {
-        state.status="fail"
-        state.text=[`${action.payload.errors}`]
-       } 
+      state.responseToast = true
+      state.loading = false
+      if (action.payload.success === true) {
+        state.status = "success"
+        state.text = [`Remove Successfully`]
+      }
+      if (action.payload.success === false) {
+        state.status = "fail"
+        state.text = [`${action.payload.errors}`]
+      }
 
 
 
     });
     builder.addCase(removefromwatchlist.rejected, (state, action) => {
-      state.responseToast=true
-      state.loading=false
-      state.status="error"
-      state.text=['Failed']
-    
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+
+    });
+    builder.addCase(getNews.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getNews.fulfilled, (state, action) => {
+
+      if (!action.payload.feed) {
+        state.responseToast = true
+        state.loading = false
+        state.status = "fail"
+        state.text = [`${action.payload?.["Error Message"]
+          || " api limit  passed"}`]
+      }
+    });
+    builder.addCase(getNews.rejected, (state, action) => {
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+    });
+    builder.addCase(getSymbol.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getSymbol.fulfilled, (state, action) => {
+      console.log(111111111);
+      if (!Array.isArray(action.payload)) {
+        state.responseToast = true
+        state.loading = false
+        state.status = "fail"
+        state.text = [`${action.payload?.["Error Message"]
+          || " api limit  passed"}`]
+      }
+
+
+    });
+    builder.addCase(getSymbol.rejected, (state, action) => {
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
+    });
+    builder.addCase(getStockgraph.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(getStockgraph.fulfilled, (state, action) => {
+      console.log(111111111);
+      if (!Array.isArray(action.payload)) {
+        state.responseToast = true
+        state.loading = false
+        state.status = "fail"
+        state.text = [`${action.payload?.["Error Message"]
+          || " api limit  passed"}`]
+
+      }
+
+    });
+    builder.addCase(getStockgraph.rejected, (state, action) => {
+      state.responseToast = true
+      state.loading = false
+      state.status = "error"
+      state.text = ['Failed']
     });
   }
 
@@ -1082,7 +1130,8 @@ export const store = configureStore({
     stock: StockSlice.reducer,
     dash: dashSlice.reducer,
     Search: SearchSlice.reducer,
-    toastfile:responseToastSlice.reducer,
+    toastfile: responseToastSlice.reducer,
+    apikey: apikeySlice.reducer
   },
   middleware: [thunkMiddleware],
 });

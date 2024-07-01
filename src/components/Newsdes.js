@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
 import Button from './Button'
 
@@ -31,4 +31,4 @@ function Newsdes(props) {
   )
 }
 
-export default Newsdes
+export default memo(Newsdes)

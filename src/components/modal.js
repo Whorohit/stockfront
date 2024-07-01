@@ -21,7 +21,7 @@ function Modal() {
             <div className={`fixed bg-black opacity-75 z-[80] min-h-screen w-screen   `}>
                 Lorem, ipsum dolor sit amet consectetur adipisicing elit. Rerum, maxime?
             </div>
-            <div class={`fixed top-10 md:left-[27%] left-0 z-[81]  md:w-[50%]  p-4  h-[calc(100%)] max-h-full`}>
+            <div class={`fixed top-10  left-0  right-0  md:left-[27%]  z-[81]  md:w-[50%]  p-4  h-[calc(100%)] max-h-full`}>
 
                 <div class="relative bg-white rounded-lg shadow ">
                     <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center " data-modal-hide="popup-modal" onClick={() => {
@@ -33,7 +33,7 @@ function Modal() {
                         <div className='flex justify-center items-center '>
                             <AiOutlineExclamationCircle className='text-gray-400 my-4' size={'70px'} />
                         </div>
-                        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{title} ?</h3>
+                        <h3 class="mb-5  text-base md:text-lg font-normal  text-gray-500 dark:text-gray-400">{title} ?</h3>
                         <button data-modal-hide="popup-modal" type="button" class="text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
                             onClick={
                                 () => {

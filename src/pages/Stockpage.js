@@ -19,12 +19,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { BiSolidCalendarX } from 'react-icons/bi'
 import AddtoWatchlist from '../components/AddtoWatchlist'
 import Modal from '../components/modal'
+import Toastbox from '../components/toastbox'
 
 function Stockpage(props) {
   const { id } = useParams();
   const navigate = useNavigate()
-  const [profit, setprofit] = useState([ ])
-  const [label, setlabel] = useState([ ])
+  const [profit, setprofit] = useState([])
+  const [label, setlabel] = useState([])
   const [timeoptionarray, setTimeoptionarray] = useState(['1min', '5min', '15min', '30min', '1hour'])
   const [showcalender, setShowcalender] = useState(false)
   const [timeoption, setTimeoption] = useState(false)
@@ -51,43 +52,50 @@ function Stockpage(props) {
     return `${year}/${month}/${day}`;
   }
   const grpahdta = async () => {
-    let profit=[];
-    let label=[];
-    const dta = await dispatch(getStockgraph({ symbol: id, date: graphdate, time: timevalue }))
-     const results=Array.isArray(dta.payload)>0?dta.payload:[]
-     console.log(dta.payload);
-     if(dta.payload.length>1)
-     {
-      profit=dta.payload.map((data)=>{
-          return(data.margin)
-         
-      })
-      label=dta.payload.map((data)=>{
-         return(data.time)
+    try {
 
-      })
-     }
-     else
-     {
-       label=[ ]
-       profit=[ ]
-       
-     }
-     setlabel(label)
-     setprofit(profit)
-     console.log(profit,label);
+      let profit = [ ];
+      let label = [ ];
+      const dta = await dispatch(getStockgraph({ symbol: id, date: graphdate, time: timevalue }))
+      const results = Array.isArray(dta.payload) > 0 ? dta.payload : []
+      // console.log(dta.payload);
+      if (Array.isArray(dta.payload)&& dta.payload.length > 1) {
+
+        let array = dta.payload.map((data) => {
+          return ({ time: data.date.slice(10), margin: data.open })
+        })
+        console.log(array);
+        profit = array.map((data) => {
+          return (data.margin)
+
+        })
+        label = array.map((data) => {
+          return (data.time)
+
+        })
+      }
+      else {
+        label = [ ]
+        profit = [ ]
+
+      }
+      setlabel(label)
+      setprofit(profit)
+      console.log(profit, label);
+    } catch (error) {
+
+    }
   }
   useEffect(() => {
     dispatch(getwatchlist())
-    .then((action)=>{
-       if(action.payload.success=== false && action.payload.error=='Please authenticate using a valid token')
-       {
-        navigate('/login')
-       }
-    })
+      .then((action) => {
+        if (action.payload.success === false && action.payload.error == 'Please authenticate using a valid token') {
+          navigate('/login')
+        }
+      })
 
     console.log(w, "ttt")
-  }, [ ])
+  }, [])
 
 
   useEffect(() => {
@@ -104,27 +112,42 @@ function Stockpage(props) {
     }
   }, [timevalue, graphdate])
   useEffect(() => {
-    dispatch(setTabKey({item:'stock'})) 
-  
+    dispatch(setTabKey({ item: 'stock' }))
+
+  }, [])
+  useEffect(() => {
+    const news = localStorage.getItem("news")
+    const stock = localStorage.getItem("stock")
+    if (!news || !stock || stock.length === 0 || news.length === 0) {
+      dispatch(updatemodal({
+        state: true,
+        title: ` for using the stock and  news  component  you have to  save  newsapi and  stockapi in db  from  stockapi -https://financialmodelingprep.com/ newsapi api-  https://www.alphavantage.co`,
+        but2: "Cancel",
+        but1: "Sure",
+        fun: () => { navigate("/account") }
+      }))
+    }
+
+
   }, [])
 
   return (
     <>
-
+ <Toastbox/>
       <div className='bg-gray-200  min-h-screen ' >
         <Navbar className=' z-20 ' />
         <div className={`p-4 sm:ml-[18rem]   `} >
           <div className='my-3  left-0     top-16 md:top-0   flex-wrap         '>
             <div className='flex   flex-wrap  gap-y-5  gap-x-6 md:gap-x-12 justify-between md:mb-5'>
-              <Info arrow={faChartPie} color={"bg-indigo-400"} incre={{ value: 6.7, bg: "bg-green-100", arrow: AiOutlineArrowUp, color: "rgb(134 239 172)", text: "green-500", border: 'border-indigo-400' }} info={{ des: "Share Value", info: "$" + usercoreinfo.range ? usercoreinfo.range : "00" }} />
-              <Info arrow={faIndustry} color={"bg-indigo-400"} incre={{ value: 5.6, bg: "bg-green-100", arrow: AiOutlineArrowUp, color: "rgb(134 239 172)", text: "green-500", border: 'border-indigo-400' }} info={{ des: "Industry", info: usercoreinfo.industry }} />
-              <Info arrow={faPiggyBank} color={"bg-indigo-400"} incre={{ value: (2.4200134).toFixed(1), bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Net Cap.", info: "$ " + usercoreinfo && millify(usercoreinfo.mktCap) }} />
-              <Info arrow={faVolumeHigh} color={"bg-indigo-400"} incre={{ value: 5.6, bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Net Volume", info: usercoreinfo && millify(usercoreinfo.volAvg) + " Shares" }} />
+              <Info arrow={faChartPie} color={"bg-indigo-400"} incre={{ value: 6.7, bg: "bg-green-100", arrow: AiOutlineArrowUp, color: "rgb(134 239 172)", text: "green-500", border: 'border-indigo-400' }} info={{ des: "Share Value", info: "$" + usercoreinfo?.range ? usercoreinfo?.range : "00" }} />
+              <Info arrow={faIndustry} color={"bg-indigo-400"} incre={{ value: 5.6, bg: "bg-green-100", arrow: AiOutlineArrowUp, color: "rgb(134 239 172)", text: "green-500", border: 'border-indigo-400' }} info={{ des: "Industry", info: usercoreinfo?.industry }} />
+              <Info arrow={faPiggyBank} color={"bg-indigo-400"} incre={{ value: (2.4200134).toFixed(1), bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Net Cap.", info: "$ " + usercoreinfo && millify(usercoreinfo?.mktCap) }} />
+              <Info arrow={faVolumeHigh} color={"bg-indigo-400"} incre={{ value: 5.6, bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Net Volume", info: usercoreinfo && millify(usercoreinfo?.volAvg) + " Shares" }} />
             </div>
             <div className='flex  relative justify-between  xl:flex-row  flex-col-reverse gap-y-4'>
               <div className='xl:w-[75%]  bg-white   w-full h-full  rounded-md border-2 border-indigo-500'>
                 <div className='flex  relative justify-end mt-4 flex-row mx-4 items-start text-indigo-700 h-[2rem] '>
-                  {showcalender && <DatePicker className='border-[2px] border-indigo-400 ' onChange={onchange}  size={'small'} />}
+                  {showcalender && <DatePicker className='border-[2px] border-indigo-400 ' onChange={onchange} size={'small'} />}
                   <BiSolidCalendarX size={'20px'} className='mx-2 cursor-pointer' onClick={() => {
                     setShowcalender(!showcalender)
                   }} />
@@ -174,11 +197,11 @@ function Stockpage(props) {
 
                   </div>
                 </div>
-                <HomeLine mydata={graphdata} label={label} profit={profit}  />
+                <HomeLine mydata={graphdata} label={label} profit={profit} />
               </div>
               <div className=' xl:space-y-36 flex xl:block justify-between  max-md:my-6  ' >
-                <Info arrow={faEarthAsia} color={"bg-indigo-400"} incre={{ value: (2.4200134).toFixed(3), bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Country,State", info: usercoreinfo.country + "," + usercoreinfo.state }} />
-                <Info arrow={faRocket} color={"bg-indigo-400"} incre={{ value: 5.6, bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Net Volume", info: millify(usercoreinfo.volAvg) + " Shares" }} />
+                <Info arrow={faEarthAsia} color={"bg-indigo-400"} incre={{ value: (2.4200134).toFixed(3), bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Country,State", info: usercoreinfo?.country + "," + usercoreinfo?.state }} />
+                <Info arrow={faRocket} color={"bg-indigo-400"} incre={{ value: 5.6, bg: "bg-red-100", arrow: AiOutlineArrowDown, color: "rgb(244 63 94)", text: "red-500", border: 'border-indigo-400' }} info={{ des: "Net Volume", info: millify(usercoreinfo?.volAvg) + " Shares" }} />
               </div>
             </div>
 

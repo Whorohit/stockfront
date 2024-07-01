@@ -5,7 +5,10 @@ import { getSymbol } from '../stores';
 import But from './Button'
 
 
-function Autocomplete(props) {
+function Autocomplete({data=[ 
+  
+
+],filtersymbol}) {
 
   // const userdata = useSelector((state) => state.stock.news);
   // const enabledata = useSelector((state) => state.stock.enablenews);
@@ -24,18 +27,18 @@ function Autocomplete(props) {
 
     <AutoComplete
       className='w-full focus:border-indigo-500  focus:border-[3px]  text-2xl  rounded-lg'
-      options={props.data}
+      options={data}
       filterOption={true}
       onSelect={(value) => {
         setInputvalue(value)
-         props.filtersymbol(inputvalue)
+         filtersymbol(inputvalue)
       }}
       size='40px'
       optionFontSize={30}
       onChange={
          (value) => {
           setInputvalue(value)
-         props.filtersymbol(inputvalue)
+         filtersymbol(inputvalue)
       
         }
       }

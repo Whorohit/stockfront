@@ -23,7 +23,7 @@ function Createwatchlist(props) {
 
     return (
         <>
-            <div className={`fixed bg-black opacity-75 w-screen h-screen ${watchlist} z-[29] `}></div>
+            <div className={`fixed top-0 bg-black opacity-75 w-screen h-screen ${watchlist} z-[29] `}></div>
             <div class={` fixed z-30  bg-white rounded-lg shadow top-[15rem] w-[90%] ml-[1%] lg:ml-[35%]  md:w-5/12 mx-auto border-[1px] border-gray-200 ${watchlist}  w-[98%]`} >
                 <div class="flex items-center justify-between p-5 border-b rounded-t  ">
                     <h3 class="text-xl font-bold text-gray-900 py-4 ">

@@ -39,7 +39,7 @@ function Toastbox() {
           });
         })
       }
-      console.log('hloooo');
+      
       dispatch(setResponseToast(false))
     }, [responseToast])
      

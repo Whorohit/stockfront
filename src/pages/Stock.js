@@ -10,6 +10,8 @@ import { AiFillFolderAdd } from 'react-icons/ai'
 import { FaClipboardList } from 'react-icons/fa'
 import AddtoWatchlist from '../components/AddtoWatchlist'
 import Toastbox from '../components/toastbox'
+import { ToastContainer } from 'react-toastify'
+import Modal from '../components/modal'
 function Stock(props) {
 
   const symbol = useSelector((state) => state.stock.symbol);
@@ -27,7 +29,11 @@ function Stock(props) {
 
 
   useEffect(() => {
-    dispatch(getSymbol());
+    try {
+      dispatch(getSymbol());
+    } catch (error) {
+       console.log(error);
+    }
   }, []);
   useEffect(() => {
     if (w.length === 0) {
@@ -40,7 +46,7 @@ function Stock(props) {
     })
     }
 
-    console.log(w, "ttt")
+   
   }, [w])
 
   
@@ -53,14 +59,30 @@ function Stock(props) {
   useEffect(() => {
     dispatch(setTabKey({item:'stock'})) 
   }, [ ])
+  useEffect(() => {
+    const news =localStorage.getItem("news")
+    const stock =localStorage.getItem("stock")
+    if (!news || !stock || stock.length===0 || news.length===0 ) {
+     dispatch(updatemodal({
+       state: true,
+       title: ` for using the stock and  news  component  you have to  save  newsapi and  stockapi in db  from  stockapi -https://financialmodelingprep.com/ newsapi api-  https://www.alphavantage.co`,
+       but2: "Cancel",
+       but1: "Sure",
+       fun: () => {  navigate("/account")}
+   }))
+    }
+    
+  
+ }, [])
   return (
     <>
     <Toastbox/>
+    {/* <Modal/> */}
     <div className=' min-h-screen bg-gray-200 ' >
       <Navbar className=' z-20 ' />
       <div className={`p-4 sm:ml-64  `} >
         <div className='my-3  left-0     top-16 md:top-0   flex-wrap  ' >
-          <Autocomplete data={symbol} filtersymbol={serachvalue} />
+          <Autocomplete data={Array.isArray(symbol)?symbol:[ ]} filtersymbol={serachvalue} />
           <div className='flex justify-normal w-5/6  my-3  bg-white overflow-x-auto mx-auto p-6 rounded-md border-2 border-indigo-400
            rounded-es-xl'>
             <table
@@ -78,7 +100,7 @@ function Stock(props) {
               </thead>
               <tbody className=' my-2 '>
                 {
-                  symbol.filter((data) => {
+                 Array.isArray(symbol)&& symbol.filter((data) => {
                     return (serach.length <= 0 ? data : data.value.includes(serach))
                   }
                   ).slice(0, count).map((data) => {
@@ -167,4 +189,4 @@ function Stock(props) {
   )
 }
 
-export default memo(Stock)
+export default Stock
