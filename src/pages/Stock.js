@@ -31,6 +31,8 @@ function Stock(props) {
   useEffect(() => {
     try {
       dispatch(getSymbol());
+      console.log(symbol);
+      
     } catch (error) {
        console.log(error);
     }
@@ -108,16 +110,16 @@ function Stock(props) {
                       <tr className=' relative font-semibold  text-black h-20 hover:border-2 hover:border-indigo-500  '
                       >
                         <td className='w-[12rem] text-center h-20' onClick={() => {
-                          setShowtogo(data.value)
+                          setShowtogo(data.name)
                           setShowtogodiv(!showtogodiv)
-                        }}>{data.label}  {showtogo === data.value && showtogodiv === true && <div className='absolute z-20 shadow-lg w-[10rem] bg-gray-100  top-0 text-base left-[10%] hover:text-indigo-700 font-semibold text-indigo-400 cursor-pointer text-center p-4 rounded-lg '
+                        }}>{data.name}  {showtogo === data.name && showtogodiv === true && <div className='absolute z-20 shadow-lg w-[10rem] bg-gray-100  top-0 text-base left-[10%] hover:text-indigo-700 font-semibold text-indigo-400 cursor-pointer text-center p-4 rounded-lg '
                           style={{ display: `${showtogodiv === true ? "block" : 'none'}` }} onClick={() => {
                             if (data.exchangeShortName === "NASDAQ" || data.exchangeShortName === "NYSE" || data.exchangeShortName === "NEO") {
-                              navigate(`/stockpage/${data.value}`)
+                              navigate(`/stockpage/${data.symbol}`)
                             }
 
                           }}>Know more?only give data of US Stocks   </div>} </td>
-                        <td className='text-center h-20'>{data.value}</td>
+                        <td className='text-center h-20'>{data.symbol}</td>
                         <td className='text-center h-20'>{data.price}</td>
                         <td className='w-[12rem] text-center h-20'>{data.exchange}</td>
                         <td className='text-center h-20'>{data.type}</td>
